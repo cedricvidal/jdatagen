@@ -1,5 +1,9 @@
 package biz.vidal.jdatagen.jodatime;
 
+import static biz.vidal.jdatagen.Generators.generator;
+import static biz.vidal.jdatagen.jodatime.JodaIncrementors.plusDays;
+import static com.google.common.collect.Iterables.limit;
+
 import java.util.Iterator;
 
 import org.joda.time.DateMidnight;
@@ -7,41 +11,17 @@ import org.joda.time.Interval;
 
 /**
  * @author <a href="http://vidal.biz">Cedric Vidal</a>
- *
+ * 
  */
 public class JodaGenerators {
 
 	public static Iterable<DateMidnight> dateDomain(
 			final DateMidnight startDate, Integer size) {
-		final DateMidnight end = startDate.plusDays(size - 1);
-		return new Iterable<DateMidnight>() {
-			public Iterator<DateMidnight> iterator() {
-				return new Iterator<DateMidnight>() {
-					private DateMidnight current = null;
-
-					public void remove() {
-					}
-
-					public DateMidnight next() {
-						if (current == null) {
-							current = startDate;
-						} else {
-							current = current.plusDays(1);
-						}
-						return current;
-					}
-
-					public boolean hasNext() {
-						return current == null || current.isBefore(end);
-					}
-				};
-			}
-		};
+		return limit(generator(startDate, plusDays(1)), size);
 	}
 
 	public static Iterable<Interval> intervalDomain(
-			final Iterable<DateMidnight> startDates,
-			final Integer stayDuration) {
+			final Iterable<DateMidnight> startDates, final Integer stayDuration) {
 		return new Iterable<Interval>() {
 			public Iterator<Interval> iterator() {
 				return new Iterator<Interval>() {
